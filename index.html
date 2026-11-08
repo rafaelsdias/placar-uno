@@ -434,6 +434,22 @@ render();
 if ("serviceWorker" in navigator && location.protocol === "https:") {
   navigator.serviceWorker.register("sw.js").catch(()=>{});
 }
+
+/* ---------- Contador (GoatCounter) ---------- */
+function gcEvent(path, title, tries){
+  tries = tries || 0;
+  if (window.goatcounter && window.goatcounter.count) {
+    window.goatcounter.count({path, title, event:true});
+  } else if (tries < 20) {
+    setTimeout(()=>gcEvent(path, title, tries+1), 500);
+  }
+}
+// Aberto pelo ícone da tela inicial (Android e iPhone)
+const instalado = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+if (instalado) gcEvent("aberto-pelo-icone", "Aberto pelo ícone da tela inicial");
+// Momento da instalação (só Android/Chrome avisa)
+window.addEventListener("appinstalled", ()=> gcEvent("instalou-app", "Instalou na tela inicial"));
 </script>
+<script data-goatcounter="https://rafaelsdias.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
